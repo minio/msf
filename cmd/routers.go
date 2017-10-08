@@ -24,8 +24,7 @@ import (
 
 // configureFederator handler returns final handler for federator http server.
 func configureFederatorHandler() (http.Handler, error) {
-	// Initialize router. `SkipClean(true)` stops gorilla/mux from
-	// normalizing URL path minio/minio#3256
+	// Initialize router. `SkipClean(true)`stops gorilla/mux from normalizing URL path.
 	mux := router.NewRouter().SkipClean(true)
 
 	// Add SAML router.

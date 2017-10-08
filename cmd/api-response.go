@@ -14,8 +14,6 @@ type mimeType string
 const (
 	// Means no response type.
 	mimeNone mimeType = ""
-	// Means response type is JSON.
-	mimeJSON mimeType = "application/json"
 	// Means response type is XML.
 	mimeXML mimeType = "application/xml"
 )

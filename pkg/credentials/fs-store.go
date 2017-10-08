@@ -33,7 +33,7 @@ type fsStore struct {
 // Federator credentials file.
 const federatorCredsFile = "creds.json"
 
-// NewStorage - Initialize a new credetnials store.
+// NewStore - Initialize a new credetnials store.
 func NewStore() Store {
 	return &fsStore{
 		Version: "1",

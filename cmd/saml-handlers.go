@@ -20,6 +20,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -32,6 +33,12 @@ import (
 	"github.com/minio/federator/pkg/credentials"
 	"github.com/minio/federator/pkg/logger"
 )
+
+var errInvalidAccessKeyID = errors.New("The access key ID you provided does not exist in our records")
+
+func canonicalAuth(accessKey, token string) string {
+	return fmt.Sprintf("%s:%s", accessKey, token)
+}
 
 // SAMLMiddleware implements middleware than allows a web application
 // to support SAML.

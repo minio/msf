@@ -32,5 +32,8 @@ func configureFederatorHandler() (http.Handler, error) {
 		return nil, err
 	}
 
+	// Add STS router.
+	registerSTSRouter(mux)
+
 	return mux, nil
 }

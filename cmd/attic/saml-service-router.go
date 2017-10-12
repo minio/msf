@@ -32,7 +32,7 @@ import (
 	router "github.com/gorilla/mux"
 	"github.com/minio/saml"
 
-	"github.com/minio/federator/pkg/credentials"
+	"github.com/minio/mfs/pkg/credentials"
 )
 
 const (

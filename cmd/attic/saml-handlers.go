@@ -30,8 +30,8 @@ import (
 	jwtreq "github.com/dgrijalva/jwt-go/request"
 	"github.com/minio/saml"
 
-	"github.com/minio/federator/pkg/credentials"
-	"github.com/minio/federator/pkg/logger"
+	"github.com/minio/mfs/pkg/credentials"
+	"github.com/minio/mfs/pkg/logger"
 )
 
 var errInvalidAccessKeyID = errors.New("The access key ID you provided does not exist in our records")

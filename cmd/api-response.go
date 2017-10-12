@@ -33,7 +33,7 @@ const (
 func setCommonHeaders(w http.ResponseWriter) {
 	// Set unique request ID for each reply.
 	w.Header().Set(responseRequestIDKey, mustGetRequestID(time.Now().UTC()))
-	w.Header().Set("Server", globalServerUserAgent)
+	w.Header().Set("Server", globalMFSUserAgent)
 	w.Header().Set("Accept-Ranges", "bytes")
 }
 
@@ -62,13 +62,4 @@ func writeResponse(w http.ResponseWriter, statusCode int, response []byte, mType
 		w.Write(response)
 		w.(http.Flusher).Flush()
 	}
-}
-
-// writeSTSErrorRespone writes error headers
-func writeSTSErrorResponse(w http.ResponseWriter, errorCode STSErrorCode) {
-	stsError := getSTSError(errorCode)
-	// Generate error response.
-	stsErrorResponse := getSTSErrorResponse(stsError)
-	encodedErrorResponse := encodeResponse(stsErrorResponse)
-	writeResponse(w, stsError.HTTPStatusCode, encodedErrorResponse, mimeXML)
 }

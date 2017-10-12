@@ -17,18 +17,37 @@
 package cmd
 
 import (
+	"crypto/tls"
+	"crypto/x509"
+	"os"
 	"runtime"
+	"time"
 
-	"github.com/minio/saml"
-
-	"github.com/minio/federator/pkg/credentials"
+	"github.com/minio/mfs/pkg/credentials"
+	miniohttp "github.com/minio/minio/pkg/http"
 )
 
-// Minio server user agent string.
-var globalServerUserAgent = "Federator/" + ReleaseTag + " (" + runtime.GOOS + "; " + runtime.GOARCH + ")"
-
 var (
-	globalSAMLProvider saml.ServiceProvider
-	globalIsSSL        bool
-	globalServerCreds  credentials.Store
+	// Minio mfs user agent string.
+	globalMFSUserAgent = "Federator/" + ReleaseTag + " (" + runtime.GOOS + "; " + runtime.GOARCH + ")"
+
+	// Global MFS creds.
+	globalMFSCreds credentials.Store
+
+	// CA root certificates, a nil value means system certs pool will be used
+	globalRootCAs *x509.CertPool
+
+	// IsSSL indicates if the server is configured with SSL.
+	globalIsSSL bool
+
+	globalTLSCertificate *tls.Certificate
+	globalPublicCerts    []*x509.Certificate
+
+	globalHTTPServer        *miniohttp.Server
+	globalHTTPServerErrorCh = make(chan error)
+	globalOSSignalCh        = make(chan os.Signal, 1)
+
+	// Default Read/Write timeouts for each connection.
+	globalConnReadTimeout  = 15 * time.Minute // Timeout after 15 minutes of no data sent by the client.
+	globalConnWriteTimeout = 15 * time.Minute // Timeout after 15 minutes if no data received by the client.
 )

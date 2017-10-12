@@ -1,4 +1,4 @@
-# Federator Contribution Guide [![Slack](https://slack.minio.io/slack?type=svg)](https://slack.minio.io) [![Go Report Card](https://goreportcard.com/badge/minio/federator)](https://goreportcard.com/report/minio/federator)
+# Federator Contribution Guide [![Slack](https://slack.minio.io/slack?type=svg)](https://slack.minio.io) [![Go Report Card](https://goreportcard.com/badge/minio/mfs)](https://goreportcard.com/report/minio/mfs)
 
 ``Federator`` community welcomes your contribution. To make the process as seamless as possible, we recommend you read this contribution guide.
 
@@ -7,7 +7,7 @@
 Start by forking the Federator GitHub repository, make changes in a branch and then send a pull request. We encourage pull requests to discuss code changes. Here are the steps in details:
 
 ### Setup your Federator Github Repository
-Fork [Federator upstream](https://github.com/minio/federator/fork) source repository to your own personal repository. Copy the URL of your Federator fork (you will need it for the `git clone` command below).
+Fork [Federator upstream](https://github.com/minio/mfs/fork) source repository to your own personal repository. Copy the URL of your Federator fork (you will need it for the `git clone` command below).
 
 ```sh
 $ mkdir -p $GOPATH/src/github.com/minio
@@ -18,8 +18,8 @@ $ cd minio
 
 ### Set up git remote as ``upstream``
 ```sh
-$ cd $GOPATH/src/github.com/minio/federator
-$ git remote add upstream https://github.com/minio/federator
+$ cd $GOPATH/src/github.com/minio/mfs
+$ git remote add upstream https://github.com/minio/mfs
 $ git fetch upstream
 $ git merge upstream/master
 ...

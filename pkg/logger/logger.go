@@ -28,6 +28,10 @@ import (
 var log = logrus.New()
 
 func logIf(level logrus.Level, source string, err error, msg string, data ...interface{}) {
+	if err == nil {
+		return
+	}
+
 	fields := logrus.Fields{
 		"source": source,
 		"cause":  err.Error(),
@@ -54,7 +58,7 @@ func getSource() string {
 	pc, filename, lineNum, ok := runtime.Caller(2)
 	if ok {
 		filename = path.Base(filename)
-		funcName = strings.TrimPrefix(runtime.FuncForPC(pc).Name(), "github.com/minio/federator.")
+		funcName = strings.TrimPrefix(runtime.FuncForPC(pc).Name(), "github.com/minio/mfs.")
 	} else {
 		filename = "<unknown>"
 		lineNum = 0

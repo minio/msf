@@ -20,6 +20,9 @@ import (
 	"crypto/rand"
 	"crypto/subtle"
 	"encoding/base64"
+	"encoding/json"
+	"encoding/xml"
+	"net/url"
 	"time"
 )
 
@@ -40,13 +43,85 @@ const (
 	alphaNumericTableLen = byte(len(alphaNumericTable))
 )
 
+// CredentialPersist - container for access and secret key, also carries
+// expiration which indicates when the associated acces/secret keys
+// are going to be expired, used by XML and JSON marshalling to persist
+type CredentialPersist struct {
+	AccessKey  string `xml:"AccessKeyId" json:"accessKey"`
+	SecretKey  string `xml:"SecretAccessKey" json:"secretKey"`
+	Endpoint   string `xml:"Endpoint" json:"endpoint"`
+	Expiration int64  `xml:"Expiration" json:"expiration"`
+}
+
 // Credential - container for access and secret key, also carries
 // expiration which indicates when the associated acces/secret keys
 // are going to be expired.
 type Credential struct {
-	AccessKey  string    `xml:"AccessKeyId,omitempty" json:"accessKey,omitempty"`
-	SecretKey  string    `xml:"SecretAccessKey,omitempty" json:"secretKey,omitempty"`
-	Expiration time.Time `xml:"Expiration,omitempty" json:"expiration,omitempty"`
+	AccessKey  string
+	SecretKey  string
+	Endpoint   *url.URL
+	Expiration time.Time
+}
+
+// MarshalXML -
+func (c Credential) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	c1 := CredentialPersist{
+		c.AccessKey,
+		c.SecretKey,
+		c.Endpoint.String(),
+		c.Expiration.Unix(),
+	}
+	e.EncodeElement(c1, start)
+	return nil
+}
+
+// UnmarshalXML -
+func (c *Credential) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	c1 := CredentialPersist{}
+	d.DecodeElement(&c1, &start)
+
+	u, err := url.Parse(c1.Endpoint)
+	if err != nil {
+		return err
+	}
+
+	*c = Credential{
+		AccessKey:  c1.AccessKey,
+		SecretKey:  c1.SecretKey,
+		Endpoint:   u,
+		Expiration: time.Unix(c1.Expiration, 0),
+	}
+	return nil
+}
+
+// MarshalJSON -
+func (c Credential) MarshalJSON() ([]byte, error) {
+	c1 := CredentialPersist{
+		AccessKey:  c.AccessKey,
+		SecretKey:  c.SecretKey,
+		Endpoint:   c.Endpoint.String(),
+		Expiration: c.Expiration.Unix(),
+	}
+	return json.Marshal(&c1)
+}
+
+// UnmarshalJSON -
+func (c *Credential) UnmarshalJSON(data []byte) error {
+	c1 := CredentialPersist{}
+	if err := json.Unmarshal(data, &c1); err != nil {
+		return err
+	}
+	u, err := url.Parse(c1.Endpoint)
+	if err != nil {
+		return err
+	}
+	*c = Credential{
+		AccessKey:  c1.AccessKey,
+		SecretKey:  c1.SecretKey,
+		Endpoint:   u,
+		Expiration: time.Unix(c1.Expiration, 0),
+	}
+	return nil
 }
 
 // IsExpired - returns whether Credential is expired or not.
@@ -67,19 +142,22 @@ func (c Credential) Equal(cc Credential) bool {
 }
 
 // NewCredential is similar to NewCredentialWithExpiration but the keys do not expire.
-func NewCredential() (Credential, error) {
-	return NewCredentialWithExpiration(timeSentinel)
+func NewCredential(endpoint string) (Credential, error) {
+	return NewCredentialWithExpiration(endpoint, timeSentinel)
 }
 
 // NewCredentialWithExpiration returns new Credentials for the requested access key
 // and secret key length. Returns an error if there was an error in generating
 // credentials.Optionally expiration can be set to signify the validity of these
 // generated credentials.
-func NewCredentialWithExpiration(expiration time.Time) (Credential, error) {
+func NewCredentialWithExpiration(endpoint string, expiration time.Time) (Credential, error) {
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return Credential{}, err
+	}
 	// Generate access key.
 	keyBytes := make([]byte, accessKeyMaxLen)
-	_, err := rand.Read(keyBytes)
-	if err != nil {
+	if _, err = rand.Read(keyBytes); err != nil {
 		return Credential{}, err
 	}
 	for i := 0; i < accessKeyMaxLen; i++ {
@@ -89,14 +167,14 @@ func NewCredentialWithExpiration(expiration time.Time) (Credential, error) {
 
 	// Generate secret key.
 	keyBytes = make([]byte, secretKeyMaxLen)
-	_, err = rand.Read(keyBytes)
-	if err != nil {
+	if _, err = rand.Read(keyBytes); err != nil {
 		return Credential{}, err
 	}
 	secretKey := string([]byte(base64.StdEncoding.EncodeToString(keyBytes))[:secretKeyMaxLen])
 	return Credential{
 		AccessKey:  accessKey,
 		SecretKey:  secretKey,
+		Endpoint:   u,
 		Expiration: expiration,
 	}, nil
 }

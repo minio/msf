@@ -33,8 +33,8 @@ fmt:
 
 lint:
 	@echo "Running $@"
-	@${GOPATH}/bin/golint -set_exit_status github.com/minio/federator/cmd...
-	@${GOPATH}/bin/golint -set_exit_status github.com/minio/federator/pkg...
+	@${GOPATH}/bin/golint -set_exit_status github.com/minio/mfs/cmd...
+	@${GOPATH}/bin/golint -set_exit_status github.com/minio/mfs/pkg...
 
 ineffassign:
 	@echo "Running $@"
@@ -58,8 +58,8 @@ check: test
 test: verifiers build
 	@echo "Running unit tests"
 	@go test $(GOFLAGS) .
-	@go test $(GOFLAGS) github.com/minio/federator/cmd...
-	@go test $(GOFLAGS) github.com/minio/federator/pkg...
+	@go test $(GOFLAGS) github.com/minio/mfs/cmd...
+	@go test $(GOFLAGS) github.com/minio/mfs/pkg...
 	@echo "Verifying build"
 	@(env bash $(PWD)/buildscripts/verify-build.sh)
 
@@ -69,8 +69,8 @@ coverage: build
 
 # Builds minio locally.
 build:
-	@echo "Building federator $(PWD)/federator ..."
-	@CGO_ENABLED=0 go build --ldflags $(BUILD_LDFLAGS) -o $(PWD)/federator
+	@echo "Building mfs $(PWD)/mfs ..."
+	@CGO_ENABLED=0 go build --ldflags $(BUILD_LDFLAGS) -o $(PWD)/mfs
 
 pkg-add:
 	@echo "Adding new package $(PKG)"
@@ -89,9 +89,9 @@ pkg-list:
 
 # Builds minio and installs it to $GOPATH/bin.
 install: build
-	@echo "Installing federator at $(GOPATH)/bin/federator ..."
-	@cp $(PWD)/federator $(GOPATH)/bin/federator
-	@echo "Check 'federator -h' for help."
+	@echo "Installing mfs at $(GOPATH)/bin/mfs ..."
+	@cp $(PWD)/mfs $(GOPATH)/bin/mfs
+	@echo "Check 'mfs -h' for help."
 
 release: verifiers
 	@MINIO_RELEASE=RELEASE ./buildscripts/build.sh

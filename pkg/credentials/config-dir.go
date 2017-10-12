@@ -25,8 +25,8 @@ import (
 )
 
 const (
-	// Default federator configuration directory where below configuration files/directories are stored.
-	defaultFederatorConfigDir = ".federator"
+	// Default mfs configuration directory where below configuration files/directories are stored.
+	defaultFederatorConfigDir = ".mfs"
 
 	// Directory contains below files/directories for HTTPS configuration.
 	certsDir = "certs"
@@ -105,6 +105,11 @@ func GetCADir() string {
 // CreateConfigDir - creates configuration directory tree.
 func CreateConfigDir() error {
 	return configDir.Create()
+}
+
+// GetConfigDir - get configuration directory.
+func GetConfigDir() string {
+	return configDir.Get()
 }
 
 // GetPublicCertFile - returns absolute path of public.crt file.

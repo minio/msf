@@ -16,23 +16,25 @@
 
 /*
  * Below main package has canonical imports for 'go get' and 'go build'
- * to work with all other clones of github.com/minio/federator repository. For
+ * to work with all other clones of github.com/minio/mfs repository. For
  * more information refer https://golang.org/doc/go1.4#canonicalimports
  */
 
-package main // import "github.com/minio/federator"
+package main // import "github.com/minio/mfs"
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 
 	version "github.com/hashicorp/go-version"
 	"github.com/minio/mc/pkg/console"
+	mfs "github.com/minio/mfs/cmd"
 )
 
 const (
-	// Minio requires at least Go v1.8.3
-	minGoVersion        = "1.8.3"
+	// Minio requires at least Go v1.9.1
+	minGoVersion        = "1.9.1"
 	goVersionConstraint = ">= " + minGoVersion
 )
 
@@ -62,4 +64,7 @@ func main() {
 	if err := checkGoVersion(runtime.Version()[2:]); err != nil {
 		console.Fatalln("Go runtime version check failed.", err)
 	}
+
+	mfs.Main(os.Args)
+
 }

@@ -28,11 +28,11 @@ import (
 
 func genLDFlags(version string) string {
 	ldflagsStr := "-s -w"
-	ldflagsStr += " -X github.com/minio/federator/cmd.Version=" + version
-	ldflagsStr += " -X github.com/minio/federator/cmd.ReleaseTag=" + releaseTag(version)
-	ldflagsStr += " -X github.com/minio/federator/cmd.CommitID=" + commitID()
-	ldflagsStr += " -X github.com/minio/federator/cmd.ShortCommitID=" + commitID()[:12]
-	ldflagsStr += " -X github.com/minio/federator/cmd.GOPATH=" + os.Getenv("GOPATH")
+	ldflagsStr += " -X github.com/minio/mfs/cmd.Version=" + version
+	ldflagsStr += " -X github.com/minio/mfs/cmd.ReleaseTag=" + releaseTag(version)
+	ldflagsStr += " -X github.com/minio/mfs/cmd.CommitID=" + commitID()
+	ldflagsStr += " -X github.com/minio/mfs/cmd.ShortCommitID=" + commitID()[:12]
+	ldflagsStr += " -X github.com/minio/mfs/cmd.GOPATH=" + os.Getenv("GOPATH")
 	return ldflagsStr
 }
 

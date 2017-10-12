@@ -18,7 +18,7 @@
 main() {
     IFS=':' read -r -a paths <<< "$GOPATH"
     for path in "${paths[@]}"; do
-        minio_path="$path/src/github.com/minio/federator"
+        minio_path="$path/src/github.com/minio/mfs"
         if [ -d "$minio_path" ]; then
             if [ "$minio_path" -ef "$PWD" ]; then
                exit 0
@@ -28,7 +28,7 @@ main() {
 
     echo "ERROR"
     echo "Project not found in ${GOPATH}."
-    echo "Follow instructions at https://github.com/minio/federator/blob/master/CONTRIBUTING.md#setup-your-federator-github-repository"
+    echo "Follow instructions at https://github.com/minio/mfs/blob/master/CONTRIBUTING.md#setup-your-mfs-github-repository"
     exit 1
 }
 

@@ -22,18 +22,11 @@ import (
 	router "github.com/gorilla/mux"
 )
 
-// configureFederator handler returns final handler for federator http server.
-func configureFederatorHandler() (http.Handler, error) {
-	// Initialize router. `SkipClean(true)`stops gorilla/mux from normalizing URL path.
+// configureMFSHandler returns final handler for the http server.
+func configureMFSHandler() http.Handler {
+	// Initialize router. `SkipClean(true)` stops gorilla/mux from
+	// normalizing URL path minio/minio#3256
 	mux := router.NewRouter().SkipClean(true)
 
-	// Add SAML router.
-	if err := registerSAMLRouter(mux); err != nil {
-		return nil, err
-	}
-
-	// Add STS router.
-	registerSTSRouter(mux)
-
-	return mux, nil
+	return registerHandlers(mux, setProxyHandler)
 }

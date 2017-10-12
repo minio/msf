@@ -30,11 +30,16 @@ type fsStore struct {
 	Creds   map[string]Credential `json:"creds"`
 }
 
-// Federator credentials file.
-const federatorCredsFile = "creds.json"
+const (
+	// Federator credentials file.
+	credsFile = "creds.json"
 
-// NewStore - Initialize a new credetnials store.
-func NewStore() Store {
+	// FSStore string value.
+	FSStore = "fs"
+)
+
+// NewFSStore - Initialize a new credetnials store.
+func NewFSStore() Store {
 	return &fsStore{
 		Version: "1",
 		Creds:   make(map[string]Credential),
@@ -71,7 +76,7 @@ func (s *fsStore) Delete(accessKey string) (prevCred Credential) {
 }
 
 func (s *fsStore) Load() error {
-	_, err := quick.Load(filepath.Join(configDir.Get(), federatorCredsFile), s)
+	_, err := quick.Load(filepath.Join(configDir.Get(), credsFile), s)
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
@@ -88,5 +93,5 @@ func (s *fsStore) Save() error {
 			delete(s.Creds, k)
 		}
 	}
-	return quick.Save(filepath.Join(configDir.Get(), federatorCredsFile), s)
+	return quick.Save(filepath.Join(configDir.Get(), credsFile), s)
 }
